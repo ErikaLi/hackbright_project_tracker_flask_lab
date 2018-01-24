@@ -156,6 +156,30 @@ def get_grades_by_title(title):
 
     return rows
 
+def get_all_students():
+    """Get a list of ALL student names and github in database"""
+    QUERY = """
+        SELECT first_name, last_name, github
+        FROM Students
+        """
+    cursor = db.session.execute(QUERY)
+
+    rows = cursor.fetchall()
+
+    return rows
+
+def get_all_projects():
+    """Get a list of ALL student names and github in database"""
+    QUERY = """
+        SELECT title
+        FROM Projects
+        """
+    cursor = db.session.execute(QUERY)
+
+    rows = cursor.fetchall()
+
+    return rows
+
 
 def handle_input():
     """Main loop.

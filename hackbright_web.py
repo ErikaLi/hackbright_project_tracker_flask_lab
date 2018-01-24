@@ -44,6 +44,31 @@ def add_a_student():
 
     return render_template("success.html", github=github)
 
+@app.route("/which_proj")
+def display_projform():
+    """Render form for project info"""
+    return render_template("which_proj.html")
+
+@app.route("/project")
+def display_proj_info():
+    """shows requested information about a project."""
+
+    title = request.args.get('project')
+    proj_info = hackbright.get_project_by_title(title)
+    proj_grades = hackbright.get_grades_by_title(title)
+
+    print proj_grades
+    print proj_info
+    return render_template("proj_info_display.html", proj=proj_info, grades=proj_grades)
+
+@app.route("/")
+def homepage():
+    """Render homepage"""
+    all_students = hackbright.get_all_students()
+    all_projects = hackbright.get_all_projects()
+
+    return render_template("home.html", students=all_students, projects=all_projects)
+
 if __name__ == "__main__":
     hackbright.connect_to_db(app)
     app.run(debug=True)

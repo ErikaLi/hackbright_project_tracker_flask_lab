@@ -9,7 +9,7 @@
   <p>GitHub Account: {{ github }}</p>
   <ul>
     {% for pair in pairs %}
-    <li>project title: {{ pair[0] }} ; grade: {{ pair[1] }}</li>
+    <li><a href="/project?project={{ pair[0] }}">project title: </a>{{ pair[0] }} ; grade: {{ pair[1] }}</li>
     {% endfor %}
   </ul>
 </body>
