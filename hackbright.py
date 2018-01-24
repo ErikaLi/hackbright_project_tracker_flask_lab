@@ -90,8 +90,10 @@ def get_grade_by_github_title(github, title):
         """
 
     db_cursor = db.session.execute(QUERY, {'github': github, 'title': title})
-
+    print db_cursor
     row = db_cursor.fetchone()
+    print row
+
 
     print "Student {acct} in project {title} received grade of {grade}".format(
         acct=github, title=title, grade=row[0])
@@ -179,6 +181,33 @@ def get_all_projects():
     rows = cursor.fetchall()
 
     return rows
+
+def add_project(name, description, grade):
+    """Add a project to database."""
+    QUERY = """
+        INSERT INTO projects (title, description, max_grade)
+          VALUES (:name, :description, :grade)
+        """
+
+    db_cursor = db.session.execute(QUERY, {'name': name,
+                                           'description': description,
+                                           'grade': grade})
+
+    db.session.commit()
+
+def update_grade(github, title, new_grade):
+    """Update grade of a project for a certain student."""
+
+    QUERY = """
+        UPDATE grades SET grade = :new_grade WHERE project_title = :title AND student_github = :github
+    """
+    cursor = db.session.execute(QUERY, {'new_grade': new_grade,
+                                        'title': title,
+                                        'github': github})
+
+    # project = Project.query.filter(student_github == github, project_title == title)
+    # project.grade = new_grade
+    db.session.commit()
 
 
 def handle_input():

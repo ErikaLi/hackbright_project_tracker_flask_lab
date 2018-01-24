@@ -1,6 +1,6 @@
 """A web application for tracking projects, students, and student grades."""
 
-from flask import Flask, request, render_template
+from flask import Flask, request, render_template, redirect
 
 import hackbright
 
@@ -68,6 +68,46 @@ def homepage():
     all_projects = hackbright.get_all_projects()
 
     return render_template("home.html", students=all_students, projects=all_projects)
+
+@app.route("/project_form")
+def show_project_form():
+    """Display form to add a new project."""
+    return render_template("create_project_form.html")
+
+@app.route("/add_project", methods=["POST"])
+def add_project():
+    """Add a project to database."""
+    name = request.form.get('project_name')
+    description = request.form.get('project_description')
+    grade = request.form.get('project_max_grade')
+    hackbright.add_project(name, description, grade)
+    return redirect('/')
+
+@app.route("/grade_form")
+def show_grade_form():
+    """Display form to add a grade."""
+    all_students = hackbright.get_all_students()
+    all_projects = hackbright.get_all_projects()
+
+    return render_template("add_grade_form.html", students=all_students, projects=all_projects)
+
+@app.route("/add_grade", methods=["POST"])
+def add_grade():
+    """Add or update a grade"""
+
+    github = request.form.get('student')
+    title = request.form.get('project')
+    grade = request.form.get('grade')
+
+    if hackbright.get_grade_by_github_title(github, title):
+        hackbright.assign_grade(github, title, grade)
+    else:
+        hackbright.update_grade(github, title, grade)
+
+    return redirect("/")
+        
+
+
 
 if __name__ == "__main__":
     hackbright.connect_to_db(app)
